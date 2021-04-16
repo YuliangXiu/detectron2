@@ -393,7 +393,7 @@ class Visualizer:
             masks = [GenericMask(x, self.output.height, self.output.width) for x in masks]
         else:
             masks = None
-
+        
         if self._instance_mode == ColorMode.SEGMENTATION and self.metadata.get("thing_colors"):
             colors = [
                 self._jitter([x / 255 for x in self.metadata.thing_colors[c]]) for c in classes
@@ -410,13 +410,13 @@ class Visualizer:
                 else None
             )
             alpha = 0.3
-
+        mask = masks[torch.argmax(scores)]
         self.overlay_instances(
-            masks=masks,
-            boxes=boxes,
-            labels=labels,
-            keypoints=keypoints,
-            assigned_colors=colors,
+            masks=mask,
+            boxes=None,
+            labels=None,
+            keypoints=None,
+            assigned_colors=None,
             alpha=alpha,
         )
         return self.output
@@ -680,6 +680,7 @@ class Visualizer:
                 self.draw_box(boxes[i], edge_color=color)
 
             if masks is not None:
+                import pdb; pdb.set_trace()
                 for segment in masks[i].polygons:
                     self.draw_polygon(segment.reshape(-1, 2), color, alpha=alpha)
 
